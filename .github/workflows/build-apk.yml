@@ -3,29 +3,31 @@ name: Build APK
 on:
   push:
     branches:
-      - master  
+      - main  # Cambia esto si tu rama principal es diferente
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
+      - name: Check out code
         uses: actions/checkout@v2
 
-      - name: Install Flutter
-        uses: subosito/flutter-action@v2
+      - name: Set up JDK
+        uses: actions/setup-java@v2
         with:
-          flutter-version: '3.0.0'  
+          java-version: '11'  # Cambia esto si necesitas otra versión
 
       - name: Install dependencies
-        run: flutter pub get
+        run: |
+          ./gradlew build  # O el comando específico para tu proyecto
 
       - name: Build APK
-        run: flutter build apk --release
+        run: |
+          ./gradlew assembleDebug  # O el comando específico para tu proyecto
 
       - name: Upload APK
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
-          name: app-release.apk
-          path: build/app/outputs/flutter-apk/app-release.apk
+          name: my-apk
+          path: app/build/outputs/apk/debug/app-debug.apk  # Cambia esto según la ruta de tu APK
