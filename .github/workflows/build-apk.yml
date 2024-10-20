@@ -1,30 +1,40 @@
-name: Build APK
+name: Android CI
 
 on:
   push:
     branches:
-      - master  # Cambia esto si tu rama principal es diferente
+      - main  # Asegúrate de que sea la rama correcta (main o master)
+  pull_request:
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
+    - name: Checkout repository
       uses: actions/checkout@v2
 
     - name: Set up JDK 11
       uses: actions/setup-java@v2
       with:
-        java-version: '11'
         distribution: 'temurin'
-        cache: 'gradle'  # Usa 'gradle' en lugar de 'maven'
+        java-version: '11'
 
-    - name: Build with Gradle
-      run: ./gradlew build  # Asegúrate de que este comando sea correcto
+    - name: Install Android SDK
+      uses: android-actions/setup-android@v2
+      with:
+        api-level: 30  # Elige el nivel adecuado de API que necesitas
+        build-tools: 30.0.3  # Ajusta según las herramientas de compilación que necesites
+        ndk: '21.1.6352462'  # Opcional si necesitas NDK, puedes eliminar esta línea si no lo usas
+
+    - name: Grant execute permission for gradlew
+      run: chmod +x gradlew
+
+    - name: Build APK
+      run: ./gradlew assembleDebug
 
     - name: Upload APK
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v2
       with:
-        name: my-apk
-        path: app/build/outputs/apk/debug/app-debug.apk  # Cambia esta ruta según la ubicación de tu APK
+        name: app-debug.apk
+        path: app/build/outputs/apk/debug/app-debug.apk
