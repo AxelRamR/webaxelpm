@@ -17,14 +17,14 @@ jobs:
       uses: actions/setup-java@v2
       with:
         java-version: '11'
-        distribution: 'temurin'  # Aquí se agrega el parámetro 'distribution'
-        cache: 'maven'
+        distribution: 'temurin'
+        cache: 'gradle'  # Usa 'gradle' en lugar de 'maven'
 
     - name: Build with Gradle
-      run: ./gradlew build  # Asegúrate de que este comando sea el correcto para tu proyecto
+      run: ./gradlew build  # Asegúrate de que este comando sea correcto
 
     - name: Upload APK
-      uses: actions/upload-artifact@v3  # Asegúrate de usar la última versión
+      uses: actions/upload-artifact@v3
       with:
         name: my-apk
         path: app/build/outputs/apk/debug/app-debug.apk  # Cambia esta ruta según la ubicación de tu APK
